@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -20,7 +21,7 @@ func newDeck() deck  {
 
 	for _, suit := range cardSuits{
 		for _, value := range cardValues{
-			cards = append(cards, suit + " of " + value)
+			cards = append(cards, value + " of " + suit)
 		}
 	}
 	return cards
@@ -42,4 +43,17 @@ func (d deck) toString() string {
 
 func (d deck) saveToFile(filename string) error {
 	return ioutil.WriteFile(filename, []byte(d.toString()),0666)
+}
+
+func newDeckFromFile(filename string) deck {
+	bs, err := ioutil.ReadFile(filename)
+	if err != nil {
+		// Option 1- print error, return a call to new deck
+		// Option 2- print err and entirely quit the prog
+		fmt.Println("Error : ",err)
+		os.Exit(1)
+
+	}
+	s := strings.Split(string(bs), ",")
+	return deck(s)
 }
